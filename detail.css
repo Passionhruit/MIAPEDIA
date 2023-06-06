@@ -1,0 +1,17 @@
+* {
+  color: white;
+}
+
+#movieDetail {
+  text-align: center;
+  background-color: green;
+}
+
+#movieDetail img {
+  float: left;
+}
+#movieDetail span {
+  display: inline-block;
+  background-color: red;
+  width: 300px;
+}

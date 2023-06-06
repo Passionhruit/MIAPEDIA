@@ -34,8 +34,16 @@ function showMovieList(val) {
                                     <p>${id}</p>
 			                            </div>
 			                            <h2>${title}</h2>
-			                            <p>개봉 ${date} 평점 ${average}</p>`;
+			                            <p>개봉 ${date} 평점 ${average}</p>
+                                  <button class="detailBtn">상세보기</button>`;
           document.querySelector("#movieList").appendChild(movieInfo);
+
+          // 상세페이지 버튼마다 다른 id 값 경로생성
+          const detailBtn = movieInfo.querySelector(".detailBtn");
+          detailBtn.addEventListener("click", function () {
+            const myPage = `index2.html?id=${id}`;
+            window.location.href = myPage;
+          });
         }
       });
     })
@@ -86,3 +94,89 @@ const showTopPage = () => {
 };
 
 topBtn.addEventListener("click", showTopPage);
+
+// 슬라이드 기능
+
+var slides,
+  slide,
+  currentIdx = 0,
+  slideCount,
+  slideWidth = 200,
+  slideMargin = 30,
+  prevBtn,
+  nextBtn;
+
+window.onload = function () {
+  slides = document.querySelector(".slides");
+  slide = document.querySelectorAll(".slides li");
+  slideCount = slide.length;
+  prevBtn = document.querySelector(".prev");
+  nextBtn = document.querySelector(".next");
+
+  makeClone();
+};
+
+// 슬라이드의 복사본을 만들어 앞또는 뒤에 추가
+function makeClone() {
+  // 뒷부분의 복사본
+  console.log(slide);
+  for (var i = 0; i < slideCount; i++) {
+    // a.cloneNode() => a 요소를 그대로 복사
+    // a.cloneNode(true) => a 뿐만 아니라 a 의 자식 모두 복사
+    var cloneSlide = slide[i].cloneNode(true);
+    cloneSlide.classList.add("clone");
+    // slides (ul) 태그에 복사본을 넣어줌
+    slides.appendChild(cloneSlide);
+  }
+  // 앞부분의 복사본 5,4,3,2,1 순서
+  for (var i = slideCount - 1; i >= 0; i--) {
+    var cloneSlide = slide[i].cloneNode(true);
+    cloneSlide.classList.add("clone");
+    slides.prepend(cloneSlide);
+  }
+  updateWidth();
+  setInitialPos();
+  setTimeout(function () {
+    slides.classList.add("animated");
+  }, 100);
+}
+
+// 요소가 일렬로 서있도록 요소를 감싼 너비를 모든요소값+마진값으로 변경
+function updateWidth() {
+  var currentSlides = document.querySelectorAll(".slides li");
+  var newSlideCount = currentSlides.length;
+  var newWidth =
+    (slideWidth + slideMargin) * newSlideCount - slideMargin + "px";
+  slides.style.width = newWidth;
+}
+
+//초기 위치를 slide 01 부터
+function setInitialPos() {
+  var initialTranslateValue = -(slideWidth + slideMargin) * slideCount;
+  // slides {transform:translateX(-1000px);}
+  slides.style.transform = `translateX(${initialTranslateValue}px)`;
+}
+
+document.querySelector(".next").addEventListener("click", function () {
+  moveSlide(currentIdx + 5);
+});
+
+document.querySelector(".prev").addEventListener("click", function () {
+  moveSlide(currentIdx - 5);
+});
+
+// 좌우로 움직임
+function moveSlide(num) {
+  slides.style.left = -num * (slideWidth + slideMargin) + "px";
+  currentIdx = num;
+  if (Math.abs(currentIdx) == slideCount) {
+    setTimeout(function () {
+      slides.classList.remove("animated");
+      slides.style.left = "0px";
+      currentIdx = 0;
+    }, 800);
+    setTimeout(function () {
+      slides.classList.add("animated");
+    }, 1000);
+  }
+}
